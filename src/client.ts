@@ -1,4 +1,4 @@
-import { parseStateToGoalFormat } from './parse';
+import { parseStateToGoalFormat } from './parseStateToGoalFormat';
 import retry from 'async-retry';
 import pLimit from 'p-limit';
 
