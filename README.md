@@ -19,3 +19,9 @@ or alternatively
 ```
 npx tsx src/main.ts
 ```
+
+## running tests with coverage
+
+```
+yarn build && yarn test
+```
