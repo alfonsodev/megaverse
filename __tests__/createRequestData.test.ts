@@ -1,10 +1,11 @@
+import { MegaverseApiClient } from '../src/client';
 import { createDiffMap } from '../src/createDiffMap';
-import { createRequestData } from '../src/createRequestData';
 
 describe('createRequestData', () => {
   test('can prepare request data to be sent', () => {
     const candidateId = '00000000-0000-0000-0000-000000000000';
     const baseUrl = 'http://localhost:4000/api';
+    const client = new MegaverseApiClient(baseUrl, candidateId);
     const goal = [
       ['SPACE', 'SPACE', 'SPACE'],
       ['SPACE', 'SPACE', 'WHITE_SOLOON'],
@@ -33,7 +34,7 @@ describe('createRequestData', () => {
       { body: { candidateId, column: 1, color: 'red', row: 4 }, url: `${baseUrl}/soloons` },
       { body: { candidateId, column: 2, color: 'purple', row: 4 }, url: `${baseUrl}/soloons` },
     ];
-    const result = createRequestData(goal, diff, candidateId, baseUrl);
+    const result = client.createRequestData(goal, diff);
     expect(result).toStrictEqual(expected);
   });
 });

@@ -1,6 +1,5 @@
 import 'dotenv/config';
 
-import { createRequestData } from './createRequestData';
 import { createDiffMap } from './createDiffMap';
 import { MegaverseApiClient } from './client';
 
@@ -14,7 +13,7 @@ import { MegaverseApiClient } from './client';
     const goal = await client.getCurrentGoal();
     if (goal) {
       const diffMap: number[][] = createDiffMap(goal, state);
-      const requestsData = createRequestData(goal, diffMap, candidateId, baseUrl);
+      const requestsData = client.createRequestData(goal, diffMap);
       await client.postObjects(requestsData, 10);
     }
     console.log('All objects posted successfully');

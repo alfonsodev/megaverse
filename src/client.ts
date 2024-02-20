@@ -1,10 +1,16 @@
 import { parseStateToGoalFormat } from './parseStateToGoalFormat';
 import retry from 'async-retry';
 import pLimit from 'p-limit';
-
+import { formatNameToObject } from './formatNameToObject';
 interface RequestData {
   url: string;
-  body: { row: number; column: number; direction?: string; color?: string };
+  body: {
+    candidateId: string;
+    row: number;
+    column: number;
+    direction?: string;
+    color?: string;
+  };
 }
 
 interface GetCurrentGoalResponseData {
@@ -73,5 +79,27 @@ export class MegaverseApiClient {
     const limit = pLimit(concurrencyLimit);
     const promises = objects.map((object) => limit(() => MegaverseApiClient.postObject(object)));
     await Promise.all(promises);
+  }
+
+  createRequestData(goal: string[][], diff: number[][]): RequestData[] {
+    const requests = diff.map((row: number[], rowIndex: number) => {
+      return row.map((col: number) => {
+        const metadata = formatNameToObject(goal[rowIndex][col]);
+        let endpoint: string;
+        if (metadata?.color) {
+          endpoint = 'soloons';
+        } else if (metadata?.direction) {
+          endpoint = 'comeths';
+        } else {
+          endpoint = 'polyanets';
+        }
+        return {
+          url: `${this.baseUrl}/${endpoint}`,
+          body: { candidateId: this.candidateId, row: rowIndex, column: col, ...metadata },
+        };
+      });
+    });
+
+    return requests.flat();
   }
 }
